@@ -29,6 +29,26 @@ function App() {
       }
       }
 
+  const toggleTodo =(todo) => {
+    setTodoItems(todoItems.map(item =>
+      item.action === todo.action
+      ? {...item, done : !item.done }
+      : item
+    ));
+  };
+
+  const todoTableRows = () => todoItems.map(item =>
+    <tr key={item.action}>
+      <td>
+        {item.action}
+      </td>
+      <td>
+        <input type="checkbox" checked={item.done}
+          onChange={ () => toggleTodo(item)} />
+      </td>
+    </tr>
+  )
+
   return (  
     <div>
       <h4 className="bg-primary text-white text-center p-2">
@@ -43,6 +63,17 @@ function App() {
           <button className="btn btn-primary mt-1"
             onClick={ createNewTodo }>Add</button>
         </div>
+        <table className="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Done</th>
+            </tr>
+          </thead>
+          <tbody>
+            { todoTableRows() }
+          </tbody>
+        </table>
       </div>
     </div>
   );
