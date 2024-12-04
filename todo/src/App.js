@@ -1,68 +1,66 @@
 // import logo from './logo.svg';
 import './App.css';
-import React, { useState } from "react"; // Import useState here
+import React, { useState } from "react";
+import TodoBanner from './TodoBanner';
+import TodoCreator from './TodoCreator';
+import TodoRow from './TodoRow';
 
-function App() { 
-  const [userName, setUserName] = useState("Adam");
-  const [todoItems, setTodoItems] = useState([{ action: "Buy Flowers", done: false },
-    { action: "Get Shoes", done: false },
-   { action: "Collect Tickets", done: true },
-   { action: "Call Joe", done: false }]);
-   const [newItemText, setNewItemText] = useState("");
+function App() {
 
-  const changeStateData = () => {
-    setUserName((prevName) => (prevName === "Adam" ? "Bob" : "Adam"));
+  const [userName] = useState("Adam"); // change 1
+
+  const [todoItems, setTodoItems] = useState([{action: "Buy Flowers", done: false},
+    {action: "Get Shoes", done: false},
+    {action: "Collect Tickets", done: true},
+    {action: "Call Joe", done: false}
+  ]);
+
+  // const [newItemText, setNewItemText] = useState(""); // change 2
+
+  // const changeStateData = () => {
+  //   setUserName((prevName) => (prevName === "Adam" ? "Bob" : "Adam")); // change 3
+  // };
+
+  // const updateNewTextValue = (event) => { // change 4
+  //   setNewItemText(event.target.value);
+  // };
+
+  const createNewTodo = (task) => {
+    if (!todoItems
+      .find(item => item.action === task)
+    )
+    {
+      setTodoItems([
+        ...todoItems,
+        { action: task, done: false }
+      ]);
+      // setNewItemText(""); //change 5
+    }
   };
 
-  const updateNewTextValue = (event) => {
-    setNewItemText(event.target.value); // **** Change 1
-    }
-
-  const  createNewTodo = () => {
-      if (!todoItems
-      .find(item => item.action === newItemText)) {
-      setTodoItems([ // **** Change 2
-        ...todoItems,
-        { action: newItemText, done: false }
-      ]);
-      setNewItemText("");      
-      }
-      }
-
-  const toggleTodo =(todo) => {
-    setTodoItems(todoItems.map(item =>
+  const toggleTodo = (todo) => {
+    setTodoItems(todoItems.map((item) =>
       item.action === todo.action
-      ? {...item, done : !item.done }
-      : item
+        ? { ...item, done: !item.done }
+        : item
     ));
   };
-
+  
   const todoTableRows = () => todoItems.map(item =>
-    <tr key={item.action}>
-      <td>
-        {item.action}
-      </td>
-      <td>
-        <input type="checkbox" checked={item.done}
-          onChange={ () => toggleTodo(item)} />
-      </td>
-    </tr>
+    <TodoRow key={ item.action } item={ item } toggle={ toggleTodo } />
   )
 
-  return (  
+  return (
     <div>
-      <h4 className="bg-primary text-white text-center p-2">
-        {userName}'s To Do List
-        ({ todoItems.filter(t => !t.done).length} items to do)
-      </h4>
-      <div className="container-fluid">
-        <div className="my-1">
-          <input className="form-control"
-            value={ newItemText }
-            onChange={ updateNewTextValue } />
-          <button className="btn btn-primary mt-1"
-            onClick={ createNewTodo }>Add</button>
-        </div>
+      <TodoBanner userName={userName} todoItems={todoItems} />
+
+      <div class="m-3">
+        <TodoCreator callback={createNewTodo} />
+      </div>
+
+      <div class="container-fluid">
+        
+
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
@@ -74,37 +72,10 @@ function App() {
             { todoTableRows() }
           </tbody>
         </table>
+        
       </div>
     </div>
   );
 }
 
 export default App;
-
-// import React, { Component } from 'react';
-// export default class App extends Component {
-//  constructor(props) {
-//  super(props);
-//  this.state = {
-//  userName: "Adam"
-//  }
-//  }
-//  changeStateData = () => {
-//  this.setState({
-//  userName: this.state.userName === "Adam" ? "Bob" : "Adam"
-//  })
-//  }
-//  render() {
-//  return (
-//  <div>
-//  <h4 className="bg-primary text-white text-center p-2">
-//  { this.state.userName }'s To Do List
-//  </h4>
-//  <button className="btn btn-primary m-2"
-//  onClick={ this.changeStateData }>
-//  Change
-//  </button>
-//  </div>
-//  )
-//  };
-// }
